@@ -1,0 +1,70 @@
+@import url("https://rsms.me/inter/inter.css");
+:root {
+  font-family: "Inter", sans-serif;
+}
+@supports (font-variation-settings: normal) {
+  :root {
+    font-family: "Inter var", sans-serif;
+    font-feature-settings: "case", "cpsp", "salt";
+  }
+}
+
+body {
+  @apply relative;
+}
+label {
+  @apply text-sm sm:text-base mt-4 mb-2 font-semibold text-gray-900;
+}
+input,
+textarea {
+  @apply text-sm sm:text-base px-4 py-2 bg-gray-100 rounded-md ring ring-transparent transition focus:outline-transparent focus:ring-blue-400;
+}
+.btn {
+  @apply px-4 py-2 rounded-lg bg-blue-700 text-white text-sm sm:text-base font-semibold ring ring-transparent transition hover:bg-blue-800 focus:outline-transparent focus:ring-blue-400 disabled:opacity-50;
+}
+.btn-white {
+  @apply bg-white text-gray-700 border-1 hover:bg-white hover:shadow;
+}
+.btn-pale {
+  @apply text-blue-700 bg-blue-200 bg-opacity-50 hover:bg-blue-100;
+}
+.btn-warning {
+  @apply bg-red-500 hover:bg-red-600 focus:ring-red-400;
+}
+.btn-helper {
+  @apply p-2 inline-flex text-gray-400 transition hover:text-gray-500 focus:outline-transparent;
+}
+.btn-icon {
+  @apply text-blue-700 flex p-2.5 rounded-full shadow-transparent transition ring ring-transparent hover:shadow-md focus:outline-transparent focus:ring-blue-400;
+}
+.badge {
+  @apply inline-flex items-center text-sm;
+}
+.modal-open {
+  padding-right: var(--scrollbarWidth);
+  @apply overflow-y-hidden;
+}
+.error {
+  @apply mt-2 text-red-500;
+}
+
+.slide-top-down-enter-active,
+.slide-top-down-leave-active {
+  transition: all 0.15s ease-in-out;
+}
+
+.slide-top-down-enter-from,
+.slide-top-down-leave-to {
+  transform: translateY(-100px);
+  opacity: 0;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease-in-out;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
