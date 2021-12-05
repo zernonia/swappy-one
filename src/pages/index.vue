@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue"
-import { toJpeg } from "html-to-image"
+import { toBlob } from "html-to-image"
 import ButtonLogin from "@/components/ButtonLogin.vue"
 import { store } from "@/scripts/store"
 import { supabase } from "@/supabase"
@@ -42,10 +42,10 @@ const uploadImage = () => {
   const random_string = Math.random().toString(36).slice(2)
   const user_id = store.user?.id
 
-  toJpeg(newImage.value).then(async (dataUrl) => {
+  toBlob(newImage.value).then(async (dataUrl) => {
     const { data, error } = await supabase.storage
       .from("profile-image")
-      .upload(`${user_id}/${random_string}.jpg`, dataUrl)
+      .upload(`${user_id}/${random_string}.png`, dataUrl)
 
     fetch("./api/user/profile_image", {
       method: "POST",
@@ -54,7 +54,7 @@ const uploadImage = () => {
       },
       body: JSON.stringify({
         key: data?.Key,
-        token: store.provider_token,
+        user: store.user?.user_metadata.user_name,
       }),
     })
       .then((res) => res.json())

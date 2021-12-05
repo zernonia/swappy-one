@@ -1,9 +1,9 @@
 import { VercelRequest, VercelResponse } from "@vercel/node"
-import { client } from "../_lib/twitter"
+import { clientLite } from "../_lib/twitter"
 
 export default async function (req: VercelRequest, res: VercelResponse) {
   const callback_url = "http://localhost:3000/callback"
-  client()
+  clientLite()
     .getRequestToken(callback_url)
     .then((result) => {
       console.log(result)

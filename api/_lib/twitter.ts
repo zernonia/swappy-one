@@ -10,9 +10,10 @@ export const clientLite = (access_token_key?: string) =>
 
 import { TwitterClient } from "twitter-api-client"
 
-export const client = (accessToken?: string) =>
+export const client = (accessToken?: string, accessTokenSecret?: string) =>
   new TwitterClient({
     apiKey: process.env.VITE_TWITTER_CONSUMER_KEY,
     apiSecret: process.env.VITE_TWITTER_CONSUMER_SECRET,
     accessToken,
+    accessTokenSecret,
   })

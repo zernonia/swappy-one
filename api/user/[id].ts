@@ -1,13 +1,13 @@
 import { VercelRequest, VercelResponse } from "@vercel/node"
 import { pick } from "lodash"
-import { client } from "../_lib/twitter"
+import { clientLite } from "../_lib/twitter"
 
 export default function (req: VercelRequest, res: VercelResponse) {
   const {
     query: { id },
   } = req
-  client()
-    .accountsAndUsers.usersShow({ screen_name: id })
+  clientLite()
+    .get("users/show", { screen_name: id })
     .then((user_data) => {
       res.json({
         data: pick(
