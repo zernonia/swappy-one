@@ -7,7 +7,8 @@ import { store } from "@/scripts/store"
 import { supabase } from "@/supabase"
 
 const id = ref("")
-const user_data = ref()
+const user_data = ref({})
+const user_image = ref("")
 const oldImage = ref()
 const newImage = ref()
 
@@ -17,14 +18,24 @@ const logoSelected = ref("vue")
 
 watch(
   () => store.user,
-  (n) => {
+  async (n) => {
     if (n) {
-      fetch(`./api/user/${store.user?.user_metadata.user_name}`)
-        .then((res) => res.json())
-        .then((res) => {
-          user_data.value = res.data
-        })
-        .catch((error) => console.log(error))
+      const { data, error } = await supabase.from("user_image").select("*").single()
+      if (data) {
+        user_data.value = data
+        const imageData = await supabase.storage
+          .from("profile-image")
+          .download(data.old_image_key.split("profile-image/")[1])
+
+        user_image.value = URL.createObjectURL(imageData.data)
+      } else {
+        fetch(`./api/user/${store.user?.user_metadata.user_name}`)
+          .then((res) => res.json())
+          .then((res) => {
+            user_image.value = getOriginalImage(res.data.profile_image_url_https)
+          })
+          .catch((error) => console.log(error))
+      }
     }
   },
   {
@@ -49,14 +60,18 @@ const selectImage = (ev: Event) => {
 const uploadImage = async () => {
   // check login with Twitter
   console.log("login first!")
-  const old_random_string = Math.random().toString(36).slice(2)
-  const new_random_string = Math.random().toString(36).slice(2)
   const user_id = store.user?.id
   try {
-    const oldBlob = await toBlob(oldImage.value)
-    const oldData = await supabase.storage.from("profile-image").upload(`${user_id}/${old_random_string}.png`, oldBlob)
+    var oldBlob
+    var oldData
+    if (!user_data.value.old_image_key) {
+      oldBlob = await toBlob(oldImage.value)
+      oldData = await supabase.storage.from("profile-image").upload(`${user_id}/old_image.png`, oldBlob)
+    }
     const newBlob = await toBlob(newImage.value)
-    const newData = await supabase.storage.from("profile-image").upload(`${user_id}/${new_random_string}.png`, newBlob)
+    const newData = await supabase.storage.from("profile-image").upload(`${user_id}/new_image.png`, newBlob, {
+      upsert: true,
+    })
 
     await fetch("./api/user/profile_image", {
       method: "POST",
@@ -64,7 +79,7 @@ const uploadImage = async () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        oldkey: oldData.data?.Key,
+        oldkey: oldData?.data?.Key,
         key: newData.data?.Key,
         user_id: store.user?.id,
         provider_token: store.provider_token,
@@ -91,10 +106,6 @@ onMounted(() => {
 
 <template>
   <div>
-    <!-- <label for="twitter_id">Twitter name</label>
-    <input v-model="id" name="twitter_id" id="twitter_id" type="text" />
-    <button @click="searchUser" class="btn">Search</button> -->
-
     <select v-model="logoSelected" id="logos" name="logos">
       <option v-for="logo in logoList" :value="logo.shortname">{{ logo.name }}</option>
     </select>
@@ -107,8 +118,8 @@ onMounted(() => {
 
     <div class="w-64 h-64 relative rounded-full overflow-hidden">
       <div ref="newImage">
-        <img ref="oldImage" :src="getOriginalImage(user_data?.profile_image_url_https) ?? BlankImage" />
-        <div class="absolute w-10 h-10 bottom-3 right-14">
+        <img ref="oldImage" :src="user_image ?? BlankImage" />
+        <div class="absolute w-10 h-10 bottom-3 left-16">
           <img v-if="logoSrc" :src="logoSrc" />
           <img v-else :src="`https://cdn.svgporn.com/logos/${logoSelected ?? 'vue'}.svg`" crossorigin="anonymous" />
         </div>

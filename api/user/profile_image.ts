@@ -23,7 +23,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
     .then(async (updated_response) => {
       let newData = new Date()
       newData.setDate(newData.getDate() + 7)
-      const insertedData = await supabase.from("user_image").insert([
+      const insertedData = await supabase.from("user_image").upsert([
         {
           user_id,
           update_on: newData,
