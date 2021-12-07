@@ -1,26 +1,36 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue"
+import { ref, onMounted, watch } from "vue"
 import { toBlob } from "html-to-image"
 import ButtonLogin from "@/components/ButtonLogin.vue"
+import BlankImage from "@/assets/twitter-blank.png"
 import { store } from "@/scripts/store"
 import { supabase } from "@/supabase"
 
 const id = ref("")
 const user_data = ref()
+const oldImage = ref()
 const newImage = ref()
 
 const logoList = ref<any[]>([])
 const logoSrc = ref("")
 const logoSelected = ref("vue")
 
-const searchUser = () => {
-  fetch(`./api/user/${id.value}`)
-    .then((res) => res.json())
-    .then((res) => {
-      user_data.value = res.data
-    })
-    .catch((error) => console.log(error))
-}
+watch(
+  () => store.user,
+  (n) => {
+    if (n) {
+      fetch(`./api/user/${store.user?.user_metadata.user_name}`)
+        .then((res) => res.json())
+        .then((res) => {
+          user_data.value = res.data
+        })
+        .catch((error) => console.log(error))
+    }
+  },
+  {
+    immediate: true,
+  }
+)
 
 const selectImage = (ev: Event) => {
   let FR = new FileReader()
@@ -36,35 +46,33 @@ const selectImage = (ev: Event) => {
   FR.readAsDataURL(ev.target.files[0])
 }
 
-const uploadImage = () => {
+const uploadImage = async () => {
   // check login with Twitter
   console.log("login first!")
-  const random_string = Math.random().toString(36).slice(2)
+  const old_random_string = Math.random().toString(36).slice(2)
+  const new_random_string = Math.random().toString(36).slice(2)
   const user_id = store.user?.id
+  try {
+    const oldBlob = await toBlob(oldImage.value)
+    const oldData = await supabase.storage.from("profile-image").upload(`${user_id}/${old_random_string}.png`, oldBlob)
+    const newBlob = await toBlob(newImage.value)
+    const newData = await supabase.storage.from("profile-image").upload(`${user_id}/${new_random_string}.png`, newBlob)
 
-  toBlob(newImage.value).then(async (dataUrl) => {
-    const { data, error } = await supabase.storage
-      .from("profile-image")
-      .upload(`${user_id}/${random_string}.png`, dataUrl)
-
-    fetch("./api/user/profile_image", {
+    await fetch("./api/user/profile_image", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        key: data?.Key,
-        user: store.user?.user_metadata.user_name,
+        oldkey: oldData.data?.Key,
+        key: newData.data?.Key,
+        user_id: store.user?.id,
+        provider_token: store.provider_token,
       }),
-    })
-      .then((res) => res.json())
-      .then((res) => {
-        console.log(res)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-  })
+    }).then((res) => res.json())
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 const getOriginalImage = (image: string) => {
@@ -83,9 +91,9 @@ onMounted(() => {
 
 <template>
   <div>
-    <label for="twitter_id">Twitter name</label>
+    <!-- <label for="twitter_id">Twitter name</label>
     <input v-model="id" name="twitter_id" id="twitter_id" type="text" />
-    <button @click="searchUser" class="btn">Search</button>
+    <button @click="searchUser" class="btn">Search</button> -->
 
     <select v-model="logoSelected" id="logos" name="logos">
       <option v-for="logo in logoList" :value="logo.shortname">{{ logo.name }}</option>
@@ -93,23 +101,17 @@ onMounted(() => {
 
     <input @change="selectImage" type="file" name="logo_upload" id="logo_upload" />
 
-    <button class="btn btn-white" @click="uploadImage">Upload</button>
+    <button class="btn btn-white" :disabled="!store.user" @click="uploadImage">Upload</button>
 
     <ButtonLogin v-if="!store.user"></ButtonLogin>
 
     <div class="w-64 h-64 relative rounded-full overflow-hidden">
       <div ref="newImage">
-        <img
-          :src="
-            getOriginalImage(user_data?.profile_image_url_https) ??
-            'https://pbs.twimg.com/profile_images/1419846185519513601/aIz1i1Oh.jpg'
-          "
-        />
-        <div class="absolute w-10 h-10 bottom-6 right-6">
+        <img ref="oldImage" :src="getOriginalImage(user_data?.profile_image_url_https) ?? BlankImage" />
+        <div class="absolute w-10 h-10 bottom-3 right-14">
           <img v-if="logoSrc" :src="logoSrc" />
           <img v-else :src="`https://cdn.svgporn.com/logos/${logoSelected ?? 'vue'}.svg`" crossorigin="anonymous" />
         </div>
-        {{ user_data }}
       </div>
     </div>
   </div>

@@ -3,7 +3,7 @@ import { supabase } from "../_lib/supabase"
 import { clientLite } from "../_lib/twitter"
 
 export default async function (req: VercelRequest, res: VercelResponse) {
-  const { oauth_token, oauth_verifier } = req.query
+  const { oauth_token, oauth_verifier, user_id } = req.query
   if (oauth_token && oauth_verifier) {
     clientLite()
       .getAccessToken({
@@ -13,7 +13,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
       .then(async (result) => {
         const { data, error } = await supabase.from("user_token").insert([
           {
-            name: result.screen_name,
+            user_id,
             oauth_token: result.oauth_token,
             oauth_token_secret: result.oauth_token_secret,
           },
@@ -27,9 +27,10 @@ export default async function (req: VercelRequest, res: VercelResponse) {
         }
       })
       .catch((error) => {
-        res.send(error)
+        console.log(error)
+        res.status(400).send(error)
       })
   } else {
-    res.send("No token found")
+    res.status(400).send("No token found")
   }
 }

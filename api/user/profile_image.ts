@@ -5,25 +5,36 @@ import { supabase } from "../_lib/supabase"
 
 export default async function (req: VercelRequest, res: VercelResponse) {
   const {
-    body: { key, user },
+    body: { oldkey, key, user_id, provider_token },
   } = req
 
-  const userData = await supabase.from("user_token").select("*").eq("name", user).single()
   const imageData = await supabase.storage.from("profile-image").download(key.split("profile-image/")[1])
   const arrayBuffer = await imageData.data.arrayBuffer()
 
   // @ts-ignore
   const base64 = new Buffer(arrayBuffer, "binary").toString("base64")
-  const { oauth_token, oauth_token_secret } = userData.data
+  const { token, secret } = provider_token
 
-  client(oauth_token, oauth_token_secret)
+  client(token, secret)
     .accountsAndUsers.accountUpdateProfileImage({
       image: base64,
       skip_status: true,
     })
-    .then((updated_response) => {
+    .then(async (updated_response) => {
+      let newData = new Date()
+      newData.setDate(newData.getDate() + 7)
+      const insertedData = await supabase.from("user_image").insert([
+        {
+          user_id,
+          update_on: newData,
+          old_image_key: oldkey,
+          new_image_key: key,
+        },
+      ])
+      console.log(insertedData.data)
+
       res.json({
-        data: pick(updated_response, "profile_background_color", "profile_image_url_https"),
+        success: true,
       })
     })
     .catch((error) => {

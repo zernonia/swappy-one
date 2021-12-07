@@ -4,5 +4,8 @@ import { User } from "@supabase/gotrue-js"
 
 export const store = reactive({
   user: null as User | null,
-  provider_token: "" as string | null | undefined,
+  provider_token: {
+    token: "",
+    secret: "",
+  },
 })
