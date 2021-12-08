@@ -8,4 +8,16 @@ export const store = reactive({
     token: "",
     secret: "",
   },
+  templates: {
+    logo: "",
+    jsDelivrLogo: "vue",
+    position: {
+      x: 40,
+      y: 40,
+    },
+    size: {
+      width: 40,
+      height: 40,
+    },
+  },
 })

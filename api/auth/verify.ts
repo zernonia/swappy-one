@@ -11,7 +11,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
         oauth_verifier,
       })
       .then(async (result) => {
-        const { data, error } = await supabase.from("user_token").insert([
+        const { data, error } = await supabase.from("user_token").upsert([
           {
             user_id,
             oauth_token: result.oauth_token,

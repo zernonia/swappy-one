@@ -1,3 +1,15 @@
+<script setup lang="ts">
+import { onMounted, onUnmounted } from "vue"
+import { store } from "@/scripts/store"
+import { supabase } from "../supabase"
+
+const loginTwitter = async () => {
+  const { user, session, error } = await supabase.auth.signIn({
+    provider: "twitter",
+  })
+}
+</script>
+
 <template>
   <section
     class="
@@ -35,15 +47,3 @@
     </div>
   </section>
 </template>
-
-<script setup lang="ts">
-import { onMounted, onUnmounted } from "vue"
-import { store } from "@/scripts/store"
-import { supabase } from "../supabase"
-
-const loginTwitter = async () => {
-  const { user, session, error } = await supabase.auth.signIn({
-    provider: "twitter",
-  })
-}
-</script>
