@@ -46,7 +46,14 @@ watch(
       <OnClickOutside @trigger="isSelectionOpen = false">
         <div class="relative flex items-center">
           <i-eva:search-fill class="absolute left-2"></i-eva:search-fill>
-          <input class="w-full pl-8" type="text" v-model="searchTerm" @focus="isSelectionOpen = true" @blur="" />
+          <input
+            class="w-full pl-8"
+            type="text"
+            placeholder="Search icon..."
+            v-model="searchTerm"
+            @focus="isSelectionOpen = true"
+            @blur=""
+          />
           <div
             v-if="isSelectionOpen"
             class="
