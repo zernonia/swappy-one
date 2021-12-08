@@ -9,15 +9,15 @@ export const store = reactive({
     secret: "",
   },
   templates: {
+    name: "",
     logo: "",
-    jsDelivrLogo: "vue",
+    jsDelivrLogo: "supabase",
     position: {
-      x: 40,
-      y: 40,
+      x: 160,
+      y: 160,
     },
     size: {
-      width: 40,
-      height: 40,
+      width: 60,
     },
   },
 })

@@ -69,7 +69,10 @@ watch(
               v-for="item in searchList"
               :key="item.name"
             >
-              <img class="w-6 h-6 mr-6" :src="`https://cdn.svgporn.com/logos/${item.shortname}.svg`" />
+              <img
+                class="w-6 h-6 mr-6"
+                :src="`https://cdn.jsdelivr.net/gh/zernonia/logos/logos/${item.shortname}.svg`"
+              />
               <p>{{ item.name }}</p>
             </button>
           </div>

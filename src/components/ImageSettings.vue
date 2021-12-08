@@ -2,7 +2,7 @@
 import { onMounted, ref, toRefs } from "vue"
 import { store } from "@/scripts/store"
 
-const { position, logo, jsDelivrLogo, size } = toRefs(store.templates)
+const { position, logo, jsDelivrLogo, size, name } = toRefs(store.templates)
 const logoList = ref<any[]>([])
 const selectImage = (ev: Event) => {
   let FR = new FileReader()
@@ -16,10 +16,11 @@ const selectImage = (ev: Event) => {
 
   // @ts-ignore
   FR.readAsDataURL(ev.target.files[0])
+  name.value = ev.target?.files[0].name
 }
 
 onMounted(() => {
-  fetch("https://cdn.jsdelivr.net/gh/gilbarbara/logos@latest/logos.json")
+  fetch("https://cdn.jsdelivr.net/gh/zernonia/logos/logos.json")
     .then((res) => res.json())
     .then((res) => {
       logoList.value = res
@@ -30,9 +31,10 @@ onMounted(() => {
 
 <template>
   <div class="flex flex-col">
-    <SearchBox :list="logoList" v-model="jsDelivrLogo"> </SearchBox>
-
-    <input @change="selectImage" type="file" name="logo_upload" id="logo_upload" />
+    <div class="flex">
+      <SearchBox v-if="!logo" :list="logoList" v-model="jsDelivrLogo"> </SearchBox>
+      <input @change="selectImage" type="file" accept="image/png, image/jpeg" name="logo_upload" id="logo_upload" />
+    </div>
 
     <label for="position">Position</label>
     <div>
@@ -42,7 +44,6 @@ onMounted(() => {
     <label for="position">Size</label>
     <div>
       <input type="number" v-model="size.width" />
-      <input type="number" v-model="size.height" />
     </div>
   </div>
 </template>

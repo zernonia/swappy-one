@@ -63,7 +63,7 @@ const uploadImage = async () => {
     let newImage = document.getElementById("newImage") as HTMLElement
     newBlob = await toBlob(newImage)
     if (newBlob) {
-      newData = await supabase.storage.from("profile-image").upload(`${user_id}/new_image.png`, newBlob, {
+      newData = await supabase.storage.from("profile-image").upload(`${user_id}/${store.templates.name}.png`, newBlob, {
         upsert: true,
       })
     } else {

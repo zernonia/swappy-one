@@ -16,8 +16,8 @@ const container = ref<HTMLElement | null>(null)
 const { x, y, style } = useDraggable(el, {
   initialValue: { x: position.value.x, y: position.value.y },
   onMove() {
-    position.value.x = +x.value.toFixed(0) - 31
-    position.value.y = +y.value.toFixed(0) - 110
+    position.value.x = +x.value.toFixed(0) - 32
+    position.value.y = +y.value.toFixed(0) - 152
   },
 })
 </script>
@@ -25,22 +25,22 @@ const { x, y, style } = useDraggable(el, {
 <template>
   <div class="w-64 h-64 relative rounded-full overflow-hidden" ref="container">
     <div id="newImage">
-      <img draggable="false" id="oldImage" :src="user_image ?? BlankImage" />
+      <img draggable="false" id="oldImage" :src="user_image ? user_image : BlankImage" />
       <div
         ref="el"
-        class="absolute cursor-move"
+        class="absolute cursor-move h-auto"
         :style="{
           top: `${position.y}px`,
           left: `${position.x}px`,
           width: `${size.width}px`,
-          height: `${size.height}px`,
         }"
+        :key="jsDelivrLogo"
       >
         <img draggable="false" v-if="logo" :src="logo" />
         <img
           v-else
           draggable="false"
-          :src="`https://cdn.svgporn.com/logos/${jsDelivrLogo}.svg`"
+          :src="`https://cdn.jsdelivr.net/gh/zernonia/logos/logos/${jsDelivrLogo}.svg`"
           crossorigin="anonymous"
         />
       </div>
