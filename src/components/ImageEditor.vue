@@ -13,6 +13,7 @@ const props = defineProps({
 const { position, logo, jsDelivrLogo, size } = toRefs(store.templates)
 const el = ref<HTMLElement | null>(null)
 const container = ref<HTMLElement | null>(null)
+// @ts-ignore
 const { x, y, style } = useDraggable(el, {
   initialValue: { x: position.value.x, y: position.value.y },
   onMove() {

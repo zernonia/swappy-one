@@ -16,6 +16,7 @@ const selectImage = (ev: Event) => {
 
   // @ts-ignore
   FR.readAsDataURL(ev.target.files[0])
+  // @ts-ignore
   name.value = ev.target?.files[0].name
 }
 

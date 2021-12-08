@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { ref, computed, watch } from "vue"
+import { ref, computed, watch, PropType } from "vue"
 import { OnClickOutside } from "@vueuse/components"
 import { useDebounce } from "@vueuse/core"
 
+interface Logo {
+  name: string
+  shortname: string
+}
+
 const props = defineProps({
   list: {
-    type: Array,
+    type: Object as PropType<Logo[]>,
     required: true,
   },
   modelValue: {
@@ -35,7 +40,7 @@ watch(
   () => props.list,
   () => {
     let obj = props.list.find((i) => i.shortname == props.modelValue)
-    searchTerm.value = obj?.name
+    searchTerm.value = obj?.name ?? ""
   }
 )
 </script>
