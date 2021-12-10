@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, watch } from "vue"
+import { ref, onMounted, watch, toRefs } from "vue"
 import { toBlob } from "html-to-image"
 import ButtonLogin from "@/components/ButtonLogin.vue"
 import { store } from "@/scripts/store"
@@ -14,8 +14,11 @@ const id = ref("")
 const user_data = ref<UserImage>()
 const user_image = ref("")
 
+const { user, provider_token } = toRefs(store)
+const { logo } = toRefs(store.templates)
+
 watch(
-  () => store.user,
+  user,
   async (n) => {
     if (n) {
       const { data, error } = await supabase.from("user").select("*").single()
@@ -28,10 +31,10 @@ watch(
         if (imageData.data) {
           user_image.value = URL.createObjectURL(imageData.data)
         } else {
-          searchUser(store.user?.user_metadata.user_name)
+          searchUser(user.value?.user_metadata.user_name)
         }
       } else {
-        searchUser(store.user?.user_metadata.user_name)
+        searchUser(user.value?.user_metadata.user_name)
       }
     }
   },
@@ -52,7 +55,7 @@ const searchUser = (screen_name: string) => {
 const uploadImage = async () => {
   // check login with Twitter
   console.log("login first!")
-  const user_id = store.user?.id
+  const user_id = user.value?.id
   try {
     let oldBlob
     let oldData
@@ -71,7 +74,7 @@ const uploadImage = async () => {
     if (newBlob) {
       newData = await supabase.storage
         .from("profile-image")
-        .upload(`${user_id}/${store.templates.name ? store.templates.name : "new_image"}.png`, newBlob, {
+        .upload(`${user_id}/${logo.value.name ? logo.value.name : "new_image"}.png`, newBlob, {
           upsert: true,
         })
     } else {
@@ -86,8 +89,9 @@ const uploadImage = async () => {
       body: JSON.stringify({
         oldkey: oldData?.data?.Key,
         key: newData?.data?.Key,
-        id: store.user?.id,
-        provider_token: store.provider_token,
+        template: logo.value.name,
+        id: user.value?.id,
+        provider_token: provider_token.value,
       }),
     }).then((res) => res.json())
 
@@ -104,14 +108,14 @@ const getOriginalImage = (image: string) => {
 
 <template>
   <div>
-    <div v-if="!store.user">
+    <div v-if="!user">
       <label for="twitter_id">Twitter name</label>
       <input v-model="id" name="twitter_id" id="twitter_id" type="text" />
       <button @click="searchUser(id)" class="btn">Search</button>
       <ButtonLogin></ButtonLogin>
     </div>
 
-    <button class="btn btn-white" :disabled="!store.user" @click="uploadImage">Upload</button>
+    <button class="btn btn-white" :disabled="!user" @click="uploadImage">Upload</button>
 
     <div class="flex">
       <ImageTemplates></ImageTemplates>

@@ -5,7 +5,7 @@ import { supabase } from "../_lib/supabase"
 
 export default async function (req: VercelRequest, res: VercelResponse) {
   const {
-    body: { oldkey, key, id, provider_token },
+    body: { oldkey, key, id, provider_token, template },
   } = req
 
   const imageData = await supabase.storage.from("profile-image").download(key.split("profile-image/")[1])
@@ -27,8 +27,9 @@ export default async function (req: VercelRequest, res: VercelResponse) {
         {
           id,
           change_back_date: newDate,
-          old_image_key: oldkey ? oldkey : undefined,
+          old_image_key: oldkey,
           new_image_key: key,
+          template,
         },
       ])
       console.log(insertedData.data)
