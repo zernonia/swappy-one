@@ -23,7 +23,7 @@ watch(
         user_data.value = data
         const imageData = await supabase.storage
           .from("profile-image")
-          .download(data.old_image_key.split("profile-image/")[1])
+          .download(data.old_image_key?.split("profile-image/")[1])
 
         if (imageData.data) {
           user_image.value = URL.createObjectURL(imageData.data)

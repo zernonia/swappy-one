@@ -2,11 +2,8 @@
 import { ref, computed, watch, PropType } from "vue"
 import { OnClickOutside } from "@vueuse/components"
 import { useDebounce } from "@vueuse/core"
-
-interface Logo {
-  name: string
-  shortname: string
-}
+import { supabase } from "@/supabase"
+import { Logo } from "@/scripts/interface"
 
 const props = defineProps({
   list: {
@@ -18,9 +15,7 @@ const props = defineProps({
   },
 })
 
-const emits = defineEmits(["update:modelValue"])
-
-const isSelectionOpen = ref(false)
+const emits = defineEmits(["update:modelValue", "selected"])
 
 const searchTerm = ref("")
 const searchDebounce = useDebounce(searchTerm, 500)
@@ -31,9 +26,12 @@ const searchList = computed(() => {
   return props.list.filter((i) => i.name.toLocaleLowerCase().indexOf(s) > -1)
 })
 
-const select = (shortname: string) => {
-  isSelectionOpen.value = false
-  emits("update:modelValue", shortname)
+const select = (logo: Logo) => {
+  emits("selected", logo)
+}
+
+const getSupabaseImageUrl = (name: string) => {
+  return import.meta.env.VITE_SUPABASE_URL + "/storage/v1/object/public/logo/public/" + name
 }
 
 watch(
@@ -50,16 +48,10 @@ watch(
     <div class="w-full">
       <div class="relative flex flex-col items-center">
         <i-eva:search-fill class="absolute top-2.5 left-2.5"></i-eva:search-fill>
-        <input
-          class="w-full pl-10 bg-gray-100"
-          type="text"
-          placeholder="Search icon..."
-          v-model="searchTerm"
-          @blur=""
-        />
+        <input class="w-full pl-10 bg-gray-100" type="text" placeholder="Search icon..." v-model="searchTerm" />
         <div class="w-full flex flex-col rounded-lg bg-gray-50 h-64 overflow-y-auto">
           <button
-            @click="select(item.shortname)"
+            @click="select(item)"
             class="
               border border-gray-200
               inline-flex
@@ -73,7 +65,12 @@ watch(
             v-for="item in searchList"
             :key="item.name"
           >
-            <img class="w-6 h-6 mr-6" :src="`https://cdn.jsdelivr.net/gh/zernonia/logos/logos/${item.shortname}.svg`" />
+            <img
+              class="w-6 h-6 mr-6"
+              v-if="item.ref == 'jsDelivr'"
+              :src="`https://cdn.jsdelivr.net/gh/zernonia/logos/logos/${item.shortname}.svg`"
+            />
+            <img v-else-if="item.ref == 'supabase'" :src="getSupabaseImageUrl(item.shortname)" alt="" />
             <p>{{ item.name }}</p>
           </button>
         </div>

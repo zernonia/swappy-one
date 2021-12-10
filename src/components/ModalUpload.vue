@@ -7,6 +7,8 @@ const emits = defineEmits(["close", "setImage"])
 const { logo, name } = toRefs(store.templates)
 const logoSrc = ref()
 const logoName = ref("")
+const logoBlob = ref("")
+const logoExt = ref("")
 const inputImage = ref()
 
 const selectImage = (ev: Event) => {
@@ -21,10 +23,16 @@ const selectImage = (ev: Event) => {
   FR.readAsDataURL(ev.target.files[0])
   // @ts-ignore
   logoName.value = ev.target?.files[0].name.split(".")[0]
+  // @ts-ignore
+  logoBlob.value = ev.target?.files[0]
+  // @ts-ignore
+  logoExt.value = ev.target?.files[0].name.split(".")[1]
 }
 
 const uploadImage = async () => {
-  const { data, error } = await supabase.storage.from("logo").upload(`public/${logoName.value}`, logoSrc.value)
+  const { data, error } = await supabase.storage
+    .from("logo")
+    .upload(`public/${logoName.value}.${logoExt.value}`, logoBlob.value)
   logo.value = logoSrc.value
   name.value = logoName.value
   emits("close")
@@ -66,7 +74,7 @@ const uploadImage = async () => {
         <i-uim:times-circle class="w-6 h-6"></i-uim:times-circle>
       </button>
       <button class="w-full h-20 flex justify-center items-center" @click="inputImage.click()">
-        <img v-if="logoSrc" class="w-20 h-full" :src="logoSrc" alt="" />
+        <img v-if="logoSrc" class="w-20 h-auto" :src="logoSrc" alt="" />
         <span v-else>large button</span>
       </button>
       <input

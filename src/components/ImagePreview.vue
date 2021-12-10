@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { ref, toRefs } from "vue"
+import { computed, toRefs } from "vue"
 import { store } from "@/scripts/store"
-import { useDraggable, useElementBounding, clamp } from "@vueuse/core"
 import BlankImage from "@/assets/twitter-blank.png"
 
 const props = defineProps({
@@ -10,44 +9,58 @@ const props = defineProps({
     required: true,
   },
 })
-const { position, logo, jsDelivrLogo, size } = toRefs(store.templates)
+const { position, logo, size } = toRefs(store.templates)
+
+const getSupabaseImageUrl = (name: string) => {
+  return import.meta.env.VITE_SUPABASE_URL + "/storage/v1/object/public/logo/public/" + name
+}
+const computedTransform = computed(() => {
+  return {
+    transform: `scale(${size.value.scale}) translate(${position.value.x}px, ${position.value.y}px)`,
+  }
+})
 </script>
 
 <template>
-  <div class="w-full h-full relative">
+  <div class="w-full relative">
     <div class="w-64 h-64 relative rounded-full overflow-hidden">
       <div id="newImage" class="w-full h-full">
         <img class="w-full h-full" id="oldImage" :src="user_image ? user_image : BlankImage" />
         <div
           ref="el"
           class="absolute right-7 bottom-7 w-20 transform origin-center"
-          :style="{ transform: `scale(${size.scale})` }"
-          :key="jsDelivrLogo"
+          :style="computedTransform"
+          :key="logo.name"
         >
-          <img class="filter drop-shadow-dark" v-if="logo" :src="logo" />
           <img
             class="filter drop-shadow-dark"
-            v-else
-            :src="`https://cdn.jsdelivr.net/gh/zernonia/logos/logos/${jsDelivrLogo}.svg`"
+            v-if="logo.ref == 'jsDelivr'"
+            :src="`https://cdn.jsdelivr.net/gh/zernonia/logos/logos/${logo.shortname}.svg`"
+            crossorigin="anonymous"
+          />
+          <img
+            class="filter drop-shadow-dark"
+            v-else-if="logo.ref == 'supabase'"
+            :src="getSupabaseImageUrl(logo.shortname)"
             crossorigin="anonymous"
           />
         </div>
       </div>
     </div>
-    <div class="w-64 h-64 rounded-full overflow-hidden absolute -bottom-1 right-2 transform origin-right scale-20">
+    <div class="w-64 h-64 rounded-full overflow-hidden absolute bottom-0 -right-2 transform origin-right scale-20">
       <div id="newImage" class="w-full h-full">
         <img class="w-full h-full" id="oldImage" :src="user_image ? user_image : BlankImage" />
-        <div
-          ref="el"
-          class="absolute right-7 bottom-7 w-20 transform origin-center"
-          :style="{ transform: `scale(${size.scale})` }"
-          :key="jsDelivrLogo"
-        >
-          <img class="filter drop-shadow-dark" v-if="logo" :src="logo" />
+        <div class="absolute right-7 bottom-7 w-20 transform origin-center" :style="computedTransform" :key="logo.name">
           <img
             class="filter drop-shadow-dark"
-            v-else
-            :src="`https://cdn.jsdelivr.net/gh/zernonia/logos/logos/${jsDelivrLogo}.svg`"
+            v-if="logo.ref == 'jsDelivr'"
+            :src="`https://cdn.jsdelivr.net/gh/zernonia/logos/logos/${logo.shortname}.svg`"
+            crossorigin="anonymous"
+          />
+          <img
+            class="filter drop-shadow-dark"
+            v-else-if="logo.ref == 'supabase'"
+            :src="getSupabaseImageUrl(logo.shortname)"
             crossorigin="anonymous"
           />
         </div>

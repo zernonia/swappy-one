@@ -6,3 +6,9 @@ export interface UserImage {
   new_image_key: string
   changed_back: boolean
 }
+
+export interface Logo {
+  ref: string
+  name: string
+  shortname: string
+}

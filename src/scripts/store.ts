@@ -10,11 +10,14 @@ export const store = reactive({
   },
   templates: {
     name: "",
-    logo: "",
-    jsDelivrLogo: "supabase",
+    logo: {
+      ref: "jsDelivr",
+      name: "supabase",
+      shortname: "supabase",
+    },
     position: {
-      x: 160,
-      y: 160,
+      x: 0,
+      y: 0,
     },
     size: {
       scale: 1,
