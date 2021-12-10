@@ -17,7 +17,8 @@ export const store = reactive({
       y: 160,
     },
     size: {
-      width: 60,
+      scale: 1,
+      width: 70,
     },
   },
 })

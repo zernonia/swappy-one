@@ -48,48 +48,36 @@ watch(
 <template>
   <div class="">
     <div class="w-full">
-      <OnClickOutside @trigger="isSelectionOpen = false">
-        <div class="relative flex items-center">
-          <i-eva:search-fill class="absolute left-2"></i-eva:search-fill>
-          <input
-            class="w-full pl-8"
-            type="text"
-            placeholder="Search icon..."
-            v-model="searchTerm"
-            @focus="isSelectionOpen = true"
-            @blur=""
-          />
-          <div
-            v-if="isSelectionOpen"
+      <div class="relative flex flex-col items-center">
+        <i-eva:search-fill class="absolute top-2.5 left-2.5"></i-eva:search-fill>
+        <input
+          class="w-full pl-10 bg-gray-100"
+          type="text"
+          placeholder="Search icon..."
+          v-model="searchTerm"
+          @blur=""
+        />
+        <div class="w-full flex flex-col rounded-lg bg-gray-50 h-64 overflow-y-auto">
+          <button
+            @click="select(item.shortname)"
             class="
-              shadow-xl
-              z-100
-              absolute
+              border border-gray-200
+              inline-flex
+              px-4
+              py-2
               w-full
-              max-h-64
-              overflow-y-auto
-              top-full
-              left-0
-              flex flex-col
-              rounded-lg
-              bg-white
+              text-left
+              hover:bg-gray-50
+              focus:outline-transparent focus:ring-transparent
             "
+            v-for="item in searchList"
+            :key="item.name"
           >
-            <button
-              @click="select(item.shortname)"
-              class="inline-flex px-4 py-2 w-full hover:bg-gray-50 focus:outline-transparent focus:ring-transparent"
-              v-for="item in searchList"
-              :key="item.name"
-            >
-              <img
-                class="w-6 h-6 mr-6"
-                :src="`https://cdn.jsdelivr.net/gh/zernonia/logos/logos/${item.shortname}.svg`"
-              />
-              <p>{{ item.name }}</p>
-            </button>
-          </div>
+            <img class="w-6 h-6 mr-6" :src="`https://cdn.jsdelivr.net/gh/zernonia/logos/logos/${item.shortname}.svg`" />
+            <p>{{ item.name }}</p>
+          </button>
         </div>
-      </OnClickOutside>
+      </div>
     </div>
   </div>
 </template>

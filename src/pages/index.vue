@@ -5,8 +5,10 @@ import ButtonLogin from "@/components/ButtonLogin.vue"
 import { store } from "@/scripts/store"
 import { supabase } from "@/supabase"
 import { UserImage } from "@/scripts/interface"
-import ImageEditor from "@/components/ImageEditor.vue"
+import ImagePreview from "@/components/ImagePreview.vue"
 import ImageSettings from "@/components/ImageSettings.vue"
+import ImageTemplates from "@/components/ImageTemplates.vue"
+import ImageList from "@/components/ImageList.vue"
 
 const id = ref("")
 const user_data = ref<UserImage>()
@@ -16,14 +18,18 @@ watch(
   () => store.user,
   async (n) => {
     if (n) {
-      const { data, error } = await supabase.from("user_image").select("*").single()
+      const { data, error } = await supabase.from("user").select("*").single()
       if (data) {
         user_data.value = data
         const imageData = await supabase.storage
           .from("profile-image")
           .download(data.old_image_key.split("profile-image/")[1])
 
-        user_image.value = URL.createObjectURL(imageData.data)
+        if (imageData.data) {
+          user_image.value = URL.createObjectURL(imageData.data)
+        } else {
+          searchUser(store.user?.user_metadata.user_name)
+        }
       } else {
         searchUser(store.user?.user_metadata.user_name)
       }
@@ -63,25 +69,29 @@ const uploadImage = async () => {
     let newImage = document.getElementById("newImage") as HTMLElement
     newBlob = await toBlob(newImage)
     if (newBlob) {
-      newData = await supabase.storage.from("profile-image").upload(`${user_id}/${store.templates.name}.png`, newBlob, {
-        upsert: true,
-      })
+      newData = await supabase.storage
+        .from("profile-image")
+        .upload(`${user_id}/${store.templates.name ? store.templates.name : "new_image"}.png`, newBlob, {
+          upsert: true,
+        })
     } else {
       return
     }
 
-    // await fetch("./api/user/profile_image", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     oldkey: oldData?.data?.Key,
-    //     key: newData?.data?.Key,
-    //     user_id: store.user?.id,
-    //     provider_token: store.provider_token,
-    //   }),
-    // }).then((res) => res.json())
+    const result = await fetch("./api/user/profile_image", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        oldkey: oldData?.data?.Key,
+        key: newData?.data?.Key,
+        id: store.user?.id,
+        provider_token: store.provider_token,
+      }),
+    }).then((res) => res.json())
+
+    console.log("Showing result", result)
   } catch (err) {
     console.log(err)
   }
@@ -104,8 +114,12 @@ const getOriginalImage = (image: string) => {
     <button class="btn btn-white" :disabled="!store.user" @click="uploadImage">Upload</button>
 
     <div class="flex">
-      <ImageEditor :user_image="user_image"></ImageEditor>
-      <ImageSettings></ImageSettings>
+      <ImageTemplates></ImageTemplates>
+      <div>
+        <ImagePreview :user_image="user_image"></ImagePreview>
+        <ImageSettings></ImageSettings>
+      </div>
+      <!-- <ImageList></ImageList> -->
     </div>
   </div>
 </template>

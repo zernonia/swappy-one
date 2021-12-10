@@ -17,7 +17,7 @@ supabase.auth.onAuthStateChange(async (ev, session) => {
 
 <template>
   <div class="w-screen h-screen p-8">
-    <h1 class="text-3xl font-bold">Twitter Badges</h1>
+    <h1 class="text-3xl font-bold">Twitter Temporary Profile</h1>
 
     <router-view></router-view>
   </div>
