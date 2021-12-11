@@ -3,9 +3,14 @@ import { computed, onMounted, ref, toRefs } from "vue"
 import { store } from "@/scripts/store"
 import ModalUpload from "./ModalUpload.vue"
 import { supabase } from "@/supabase"
-import { Logo } from "@/scripts/interface"
+import { useEventBus } from "@vueuse/core"
 
 const { position, logo, size, name } = toRefs(store.templates)
+const bus = useEventBus("new-logo")
+bus.on((ev) => {
+  console.log(ev)
+  fetchSupabaseStorage()
+})
 
 const isUploadOpen = ref(false)
 const searchTerm = ref("supabase")
@@ -18,10 +23,21 @@ const computedList = computed(() => {
       return { ...lg, ref: "jsDelivr" }
     }),
     ...customLogoList.value.map((lg) => {
-      return { ...lg, ref: "supabase", shortname: lg.name, name: lg.name.split(".")[0] }
+      return { name: lg.name.split(".")[0], shortname: lg.name, ref: "supabase" }
     }),
   ]
 })
+
+const fetchSupabaseStorage = () => {
+  supabase.storage
+    .from("logo")
+    .list("public")
+    .then((res) => {
+      if (res.data) {
+        customLogoList.value = res.data
+      }
+    })
+}
 
 onMounted(() => {
   fetch("https://cdn.jsdelivr.net/gh/zernonia/logos/logos.json")
@@ -31,40 +47,18 @@ onMounted(() => {
     })
     .catch((error) => console.log(error))
 
-  supabase.storage
-    .from("logo")
-    .list("public")
-    .then((res) => {
-      if (res.data) {
-        customLogoList.value = res.data
-      }
-    })
+  fetchSupabaseStorage()
 })
 </script>
 
 <template>
-  <div class="flex flex-col w-72">
-    <div class="flex items-center py-2">
-      <button class="btn btn-white">Logo</button>
-      <button class="btn btn-white">Frame</button>
-    </div>
-    <div class="flex">
-      <SearchBox :list="computedList" v-model="searchTerm" @selected="logo = $event"> </SearchBox>
+  <div class="flex flex-col w-56">
+    <SearchBox :list="computedList" v-model="searchTerm" @selected="logo = $event"> </SearchBox>
 
-      <button class="p-3 w-10 h-10" @click="isUploadOpen = true">
-        <i-uim:upload-alt class="w-auto h-auto"></i-uim:upload-alt>
-      </button>
-      <ModalUpload v-if="isUploadOpen" @close="isUploadOpen = false" />
-    </div>
-    <!-- 
-    <label for="position">Position</label>
-    <div>
-      <input type="number" v-model="position.x" />
-      <input type="number" v-model="position.y" />
-    </div>
-    <label for="position">Size</label>
-    <div>
-      <input type="number" v-model="size.width" />
-    </div> -->
+    <button class="btn mt-4" @click="isUploadOpen = true">
+      <span class="text-white mr-2 text-sm"> Upload custom logo </span>
+      <i-uim:upload-alt class="w-auto h-auto text-green-400"></i-uim:upload-alt>
+    </button>
+    <ModalUpload :list="computedList" v-if="isUploadOpen" @close="isUploadOpen = false" />
   </div>
 </template>

@@ -47,9 +47,11 @@ const computedTransform = computed(() => {
         </div>
       </div>
     </div>
-    <div class="w-64 h-64 rounded-full overflow-hidden absolute bottom-0 -right-2 transform origin-right scale-20">
-      <div id="newImage" class="w-full h-full">
-        <img class="w-full h-full" id="oldImage" :src="user_image ? user_image : BlankImage" />
+    <div
+      class="w-64 h-64 rounded-full overflow-hidden absolute bottom-0 right-0 transform origin-bottom-right scale-20"
+    >
+      <div class="w-full h-full">
+        <img class="w-full h-full" :src="user_image ? user_image : BlankImage" />
         <div class="absolute right-7 bottom-7 w-20 transform origin-center" :style="computedTransform" :key="logo.name">
           <img
             class="filter drop-shadow-dark"

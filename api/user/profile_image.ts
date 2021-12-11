@@ -5,7 +5,7 @@ import { supabase } from "../_lib/supabase"
 
 export default async function (req: VercelRequest, res: VercelResponse) {
   const {
-    body: { oldkey, key, id, provider_token, template },
+    body: { oldkey, key, id, provider_token, template, period },
   } = req
 
   const imageData = await supabase.storage.from("profile-image").download(key.split("profile-image/")[1])
@@ -22,10 +22,11 @@ export default async function (req: VercelRequest, res: VercelResponse) {
     })
     .then(async (updated_response) => {
       let newDate = new Date()
-      newDate.setDate(newDate.getDate() + 7)
+      newDate.setDate(newDate.getDate() + period)
       const insertedData = await supabase.from("user").upsert([
         {
           id,
+          update_on: new Date(),
           change_back_date: newDate,
           old_image_key: oldkey,
           new_image_key: key,

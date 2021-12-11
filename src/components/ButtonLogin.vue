@@ -13,5 +13,5 @@ const loginTwitter = async () => {
 </script>
 
 <template>
-  <button class="btn" @click="loginTwitter"><i-mdi:twitter class="mr-2"></i-mdi:twitter> Twitter</button>
+  <button class="btn" @click="loginTwitter"><i-mdi:twitter class="mr-2"></i-mdi:twitter>Login</button>
 </template>

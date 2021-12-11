@@ -1,7 +1,19 @@
 <script setup lang="ts">
-import { ref, toRefs } from "vue"
+import { PropType, ref, toRefs } from "vue"
 import { store } from "@/scripts/store"
 import { supabase } from "../supabase"
+import Modal from "./Modal.vue"
+import { Logo } from "@/scripts/interface"
+import { useEventBus } from "@vueuse/core"
+
+const bus = useEventBus("new-logo")
+
+const props = defineProps({
+  list: {
+    type: Object as PropType<Logo[]>,
+    default: [],
+  },
+})
 
 const emits = defineEmits(["close", "setImage"])
 const { logo, name } = toRefs(store.templates)
@@ -10,6 +22,8 @@ const logoName = ref("")
 const logoBlob = ref("")
 const logoExt = ref("")
 const inputImage = ref()
+const errorText = ref("")
+const isLoading = ref(false)
 
 const selectImage = (ev: Event) => {
   let FR = new FileReader()
@@ -30,68 +44,78 @@ const selectImage = (ev: Event) => {
 }
 
 const uploadImage = async () => {
+  errorText.value = ""
+  isLoading.value = true
+  if (props.list.find((lg) => lg.name.toLowerCase() == logoName.value.toLowerCase())) {
+    errorText.value = "Please use another name"
+    isLoading.value = false
+    return
+  }
   const { data, error } = await supabase.storage
     .from("logo")
     .upload(`public/${logoName.value}.${logoExt.value}`, logoBlob.value)
-  logo.value = logoSrc.value
-  name.value = logoName.value
-  emits("close")
+
+  if (data) {
+    logo.value = {
+      name: logoName.value,
+      shortname: `${logoName.value}.${logoExt.value}`,
+      ref: "supabase",
+    }
+    name.value = logoName.value
+    bus.emit("new logo")
+    emits("close")
+  } else {
+    errorText.value = "Please use another name"
+    isLoading.value = false
+  }
 }
 </script>
 
 <template>
-  <section
-    class="
-      fixed
-      top-0
-      left-0
-      w-screen
-      h-screen
-      bg-gray-100 bg-opacity-20
-      backdrop-filter backdrop-blur
-      flex
-      items-center
-      justify-center
-      z-50
-    "
-  >
-    <div
+  <Modal @close="emits('close')">
+    <button
       class="
-        w-auto
-        h-auto
-        flex flex-col
-        shadow-xl
-        items-center
+        max-w-72
+        w-full
+        h-30
+        flex
         justify-center
-        bg-white
-        p-8
-        rounded-lg
-        text-black
-        relative
+        items-center
+        text-white
+        border-dashed border-3 border-green-400
+        rounded-xl
+        animate-duration-500 animate-ease-linear animate-bounce-in
       "
+      @click="inputImage.click()"
     >
-      <button class="absolute -top-2 -right-2" @click="emits('close')">
-        <i-uim:times-circle class="w-6 h-6"></i-uim:times-circle>
-      </button>
-      <button class="w-full h-20 flex justify-center items-center" @click="inputImage.click()">
-        <img v-if="logoSrc" class="w-20 h-auto" :src="logoSrc" alt="" />
-        <span v-else>large button</span>
-      </button>
+      <img v-if="logoSrc" class="w-auto h-30 object-contain" :src="logoSrc" alt="" />
+      <span v-else>Click here to Upload...</span>
+    </button>
+    <input
+      ref="inputImage"
+      class="hidden"
+      @change="selectImage"
+      type="file"
+      accept="image/png, image/jpeg"
+      name="logo_upload"
+      id="logo_upload"
+    />
+    <div class="flex items-center mt-4">
       <input
-        ref="inputImage"
-        class="hidden"
-        @change="selectImage"
-        type="file"
-        accept="image/png, image/jpeg"
-        name="logo_upload"
-        id="logo_upload"
+        type="text"
+        class="w-full bg-dark-300 text-white placeholder-white placeholder-opacity-50"
+        placeholder="Logo name"
+        v-model="logoName"
       />
-      <div class="flex items-center">
-        <input type="text" v-model="logoName" />
-        <button class="px-4 py-2" @click="uploadImage">
-          <i-uim:upload-alt class="w-auto h-auto"></i-uim:upload-alt>
-        </button>
-      </div>
+      <button
+        :disabled="!logoBlob || !logoName"
+        class="px-2 py-2 text-green-400 disabled:opacity-50 disabled:cursor-not-allowed"
+        @click="uploadImage"
+      >
+        <i-uim:upload-alt v-if="!isLoading" class="!w-9 !h-9 !p-2 btn"></i-uim:upload-alt>
+        <i-uim:refresh v-else class="w-auto h-auto animate-spin animate-ease-in-out"></i-uim:refresh>
+      </button>
     </div>
-  </section>
+    <span class="text-red-400 text-xs self-start mt-1 ml-4" v-if="errorText">{{ errorText }}</span>
+  </Modal>
 </template>

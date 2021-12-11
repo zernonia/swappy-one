@@ -1,4 +1,4 @@
-import { reactive } from "vue"
+import { reactive, ComputedRef } from "vue"
 import { useStorage } from "@vueuse/core"
 import { User } from "@supabase/gotrue-js"
 
@@ -8,7 +8,7 @@ export const store = reactive({
     token: "",
     secret: "",
   },
-  templates: {
+  templates: useStorage("templates", {
     name: "",
     logo: {
       ref: "jsDelivr",
@@ -23,5 +23,9 @@ export const store = reactive({
       scale: 1,
       width: 70,
     },
-  },
+    period: {
+      name: "1 week",
+      value: 7,
+    },
+  }),
 })

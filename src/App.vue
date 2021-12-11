@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { supabase } from "@/supabase"
 import { onMounted } from "vue-demi"
+import TermsPrivacy from "./components/TermsPrivacy.vue"
 import { store } from "./scripts/store"
 
 supabase.auth.onAuthStateChange(async (ev, session) => {
@@ -11,14 +12,25 @@ supabase.auth.onAuthStateChange(async (ev, session) => {
       store.provider_token.token = data.oauth_token
       store.provider_token.secret = data.oauth_token_secret
     }
+  } else if (ev == "SIGNED_OUT") {
+    store.user = null
   }
 })
 </script>
 
 <template>
-  <div class="w-screen h-screen p-8">
-    <h1 class="text-3xl font-bold">Twitter Temporary Profile</h1>
+  <div class="w-screen min-h-screen p-8 bg-dark-900 flex flex-col justify-center items-center md:pb-32">
+    <router-link to="/">
+      <h1 class="text-4xl text-center font-bold text-white inline-flex">
+        <i-uim:twitter-alt class="mr-4"></i-uim:twitter-alt>
+        TweetTP
+      </h1>
+    </router-link>
 
     <router-view></router-view>
+
+    <footer v-if="$route.path == '/'" class="mt-8">
+      <TermsPrivacy></TermsPrivacy>
+    </footer>
   </div>
 </template>

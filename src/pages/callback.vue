@@ -14,5 +14,5 @@ fetch("/api/auth/verify" + params + "&user_id=" + store.user?.id)
 </script>
 
 <template>
-  <div>redirecting...</div>
+  <div class="text-white">redirecting...</div>
 </template>

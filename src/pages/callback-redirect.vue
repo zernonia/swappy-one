@@ -11,5 +11,5 @@ watch(
 </script>
 
 <template>
-  <div>redirecting...</div>
+  <div class="text-white">redirecting...</div>
 </template>

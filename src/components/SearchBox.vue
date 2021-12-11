@@ -44,36 +44,35 @@ watch(
 </script>
 
 <template>
-  <div class="">
-    <div class="w-full">
-      <div class="relative flex flex-col items-center">
-        <i-eva:search-fill class="absolute top-2.5 left-2.5"></i-eva:search-fill>
-        <input class="w-full pl-10 bg-gray-100" type="text" placeholder="Search icon..." v-model="searchTerm" />
-        <div class="w-full flex flex-col rounded-lg bg-gray-50 h-64 overflow-y-auto">
-          <button
-            @click="select(item)"
-            class="
-              border border-gray-200
-              inline-flex
-              px-4
-              py-2
-              w-full
-              text-left
-              hover:bg-gray-50
-              focus:outline-transparent focus:ring-transparent
-            "
-            v-for="item in searchList"
-            :key="item.name"
-          >
-            <img
-              class="w-6 h-6 mr-6"
-              v-if="item.ref == 'jsDelivr'"
-              :src="`https://cdn.jsdelivr.net/gh/zernonia/logos/logos/${item.shortname}.svg`"
-            />
-            <img v-else-if="item.ref == 'supabase'" :src="getSupabaseImageUrl(item.shortname)" alt="" />
-            <p>{{ item.name }}</p>
-          </button>
-        </div>
+  <div class="w-full h-full">
+    <div class="relative h-full flex flex-col items-center">
+      <i-eva:search-fill class="absolute top-2 left-4 text-green-400"></i-eva:search-fill>
+      <input
+        class="w-full !pl-16 bg-dark-300 text-white placeholder-white"
+        type="text"
+        placeholder="Search icon..."
+        v-model="searchTerm"
+      />
+      <div class="mt-4 w-full h-full max-h-74 flex flex-col rounded-xl bg-dark-400 text-white overflow-y-auto">
+        <button
+          @click="select(item)"
+          class="btn !justify-start !rounded-none !text-left"
+          v-for="item in searchList"
+          :key="item.name"
+        >
+          <img
+            class="w-6 h-6 mr-6"
+            v-if="item.ref == 'jsDelivr'"
+            :src="`https://cdn.jsdelivr.net/gh/zernonia/logos/logos/${item.shortname}.svg`"
+          />
+          <img
+            class="w-6 h-6 mr-6 object-contain"
+            v-else-if="item.ref == 'supabase'"
+            :src="getSupabaseImageUrl(item.shortname)"
+            alt=""
+          />
+          <p>{{ item.name }}</p>
+        </button>
       </div>
     </div>
   </div>

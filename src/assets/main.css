@@ -13,32 +13,29 @@ body {
   @apply relative;
 }
 label {
-  @apply text-sm sm:text-base mt-4 mb-2 font-semibold text-gray-900;
+  @apply text-sm mt-2 mb-1 text-white;
 }
 input,
 textarea {
-  @apply text-sm sm:text-base px-4 py-2 bg-gray-100 rounded-md ring ring-transparent transition focus:outline-transparent focus:ring-blue-400;
+  @apply text-sm bg-gray-100 ring ring-transparent transition focus:outline-transparent focus:ring-transparent;
+}
+input[type="text"] {
+  @apply px-4 py-2 rounded-xl placeholder-white placeholder-opacity-50;
+}
+input[type="range"]::-webkit-slider-thumb {
+  width: 12px;
+  height: 12px;
+  cursor: ew-resize;
+  @apply appearance-none rounded-full bg-green-500;
+}
+input[type="range"] {
+  @apply appearance-none rounded-full bg-dark-100 h-5px;
+}
+button {
+  @apply focus:outline-transparent focus:ring-transparent;
 }
 .btn {
-  @apply px-4 py-2 rounded-lg bg-blue-700 text-white text-sm sm:text-base font-semibold ring ring-transparent transition hover:bg-blue-800 focus:outline-transparent focus:ring-blue-400 disabled:opacity-50;
-}
-.btn-white {
-  @apply bg-white text-gray-700 border-1 hover:bg-white hover:shadow;
-}
-.btn-pale {
-  @apply text-blue-700 bg-blue-200 bg-opacity-50 hover:bg-blue-100;
-}
-.btn-warning {
-  @apply bg-red-500 hover:bg-red-600 focus:ring-red-400;
-}
-.btn-helper {
-  @apply p-2 inline-flex text-gray-400 transition hover:text-gray-500 focus:outline-transparent;
-}
-.btn-icon {
-  @apply text-blue-700 flex p-2.5 rounded-full shadow-transparent transition ring ring-transparent hover:shadow-md focus:outline-transparent focus:ring-blue-400;
-}
-.badge {
-  @apply inline-flex items-center text-sm;
+  @apply px-4 py-2 bg-dark-400 hover:bg-dark-300 rounded-xl w-full flex items-center justify-center text-white text-sm transition disabled:opacity-50;
 }
 .modal-open {
   padding-right: var(--scrollbarWidth);
@@ -48,6 +45,42 @@ textarea {
   @apply mt-2 text-red-500;
 }
 
+ol {
+  @apply list-roman list-inside;
+}
+.prose {
+  & h1 {
+    @apply text-2xl;
+  }
+  & li,
+  p {
+    @apply py-2;
+  }
+}
+
+#step0,
+#step1,
+#step2,
+#step3 {
+  @apply relative;
+}
+#step0::before {
+  content: "0.";
+  @apply absolute -top-3 -left-10 text-4xl text-white opacity-25 font-bold;
+}
+#step1::before {
+  content: "1.";
+  @apply absolute -top-3 -left-10 text-4xl text-white opacity-25 font-bold;
+}
+#step2::before {
+  content: "2.";
+  @apply absolute -top-3 -left-2 text-4xl text-white opacity-25 font-bold;
+}
+#step3::before {
+  content: "3.";
+  @apply absolute -top-3 -left-10 text-4xl text-white opacity-25 font-bold;
+}
+
 .slide-top-down-enter-active,
 .slide-top-down-leave-active {
   transition: all 0.15s ease-in-out;
@@ -55,7 +88,7 @@ textarea {
 
 .slide-top-down-enter-from,
 .slide-top-down-leave-to {
-  transform: translateY(-100px);
+  transform: translateY(-10px);
   opacity: 0;
 }
 
@@ -67,4 +100,32 @@ textarea {
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
+}
+
+/* width */
+::-webkit-scrollbar {
+  @apply w-2 rounded-full;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  @apply bg-dark-600;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  @apply bg-dark-200 cursor-pointer;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-dark-100;
+}
+
+progress::-webkit-progress-bar {
+  @apply rounded-full bg-dark-300;
+}
+progress::-webkit-progress-value {
+  background-size: 400%;
+  @apply rounded-full bg-gradient-to-r  from-green-500  via-green-300 to-emerald-600 transition transition-all ease-in-out duration-500;
 }
