@@ -77,7 +77,7 @@ const getOriginalImage = (image: string) => {
     </div>
     <ButtonLogin class="mt-4 md:mt-0"></ButtonLogin>
   </div>
-  <div class="px-1 mt-8 w-full flex items-center justify-center">
+  <div class="px-1 mt-4 w-full flex items-center justify-center">
     <div class="relative flex h-full w-full max-w-screen-md rounded-2xl">
       <div class="z-10 w-full bg-dark-700 rounded-2xl p-4">
         <div class="z-20 absolute -top-6 md:-top-4 -right-4 flex items-center space-x-2">

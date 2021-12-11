@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref, computed, watch, PropType } from "vue"
+import { ref, computed, watch, PropType, onMounted } from "vue"
 import { OnClickOutside } from "@vueuse/components"
 import { useDebounce } from "@vueuse/core"
 import { supabase } from "@/supabase"
 import { Logo } from "@/scripts/interface"
+import { useRoute, useRouter } from "vue-router"
 
 const props = defineProps({
   list: {
@@ -17,6 +18,8 @@ const props = defineProps({
 
 const emits = defineEmits(["update:modelValue", "selected"])
 
+const route = useRoute()
+const router = useRouter()
 const searchTerm = ref("")
 const searchDebounce = useDebounce(searchTerm, 500)
 
@@ -33,6 +36,24 @@ const select = (logo: Logo) => {
 const getSupabaseImageUrl = (name: string) => {
   return import.meta.env.VITE_SUPABASE_URL + "/storage/v1/object/public/logo/public/" + name
 }
+
+watch(
+  () => [props.list],
+  () => {
+    const { template } = route.query
+    if (template) {
+      emits("update:modelValue", template)
+      const i = props.list.find(
+        (lg) => lg.name.toLocaleLowerCase().trim() == String(template).toLocaleLowerCase().trim()
+      )
+      if (i) {
+        select(i)
+        router.replace("/")
+      }
+    }
+  },
+  { immediate: true }
+)
 
 watch(
   () => props.list,

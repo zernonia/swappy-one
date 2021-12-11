@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { computed, ref } from "vue"
+import { computed, ref, toRefs } from "vue"
 import { store } from "@/scripts/store"
 import Modal from "./Modal.vue"
 
+const { logo } = toRefs(store.templates)
+
 const emits = defineEmits(["close"])
-const computedLink = computed(() => `https://tweettp.com/?name=${store.templates.name}`)
+const computedLink = computed(() => `https://www.swappy.one/?template=${logo.value.name}`)
 const msg = computed(
   () =>
-    `If you want to change your Twitter profile temporary, check out Tweettp by @zernonia!%0A%0AI'm currently using ${store.templates.name}!`
+    `If you want to change your Twitter profile temporary, check out Swappy. One by @zernonia!%0A%0AI'm currently using ${logo.value.name}!`
 )
 </script>
 

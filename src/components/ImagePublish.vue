@@ -39,8 +39,6 @@ const setStep = (progress: number, msg: string) => {
 }
 
 const publishImage = async () => {
-  // check login with Twitter
-  console.log("login first!")
   if (!props.user_data) {
     isLoginModalOpen.value = true
     return
