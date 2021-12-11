@@ -2,7 +2,7 @@ import { VercelRequest, VercelResponse } from "@vercel/node"
 import { clientLite } from "../_lib/twitter"
 
 export default async function (req: VercelRequest, res: VercelResponse) {
-  const callback_url = "http://localhost:3000/callback"
+  const callback_url = "https://www.swappy.one/callback"
   clientLite()
     .getRequestToken(callback_url)
     .then((result) => {
