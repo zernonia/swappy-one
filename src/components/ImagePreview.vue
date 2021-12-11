@@ -16,7 +16,9 @@ const getSupabaseImageUrl = (name: string) => {
 }
 const computedTransform = computed(() => {
   return {
-    transform: `scale(${size.value.scale}) translate(${position.value.x}px, ${position.value.y}px)`,
+    transform: `scale(${size.value.scale})`,
+    left: `${position.value.x}px`,
+    top: `${position.value.y}px`,
   }
 })
 </script>
@@ -28,7 +30,7 @@ const computedTransform = computed(() => {
         <img class="w-full h-full" id="oldImage" :src="user_image ? user_image : BlankImage" />
         <div
           ref="el"
-          class="absolute right-7 bottom-7 w-20 transform origin-center"
+          class="absolute top-0 left-0 w-20 transform origin-center"
           :style="computedTransform"
           :key="logo.name"
         >

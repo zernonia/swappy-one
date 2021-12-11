@@ -16,8 +16,8 @@ export const store = reactive({
       shortname: "supabase",
     },
     position: {
-      x: 0,
-      y: 0,
+      x: 150,
+      y: 150,
     },
     size: {
       scale: 1,

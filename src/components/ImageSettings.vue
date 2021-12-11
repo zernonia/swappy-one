@@ -9,8 +9,8 @@ const { position, logo, size } = toRefs(store.templates)
   <div class="flex flex-col mt-2">
     <label for="position">Position (x, y)</label>
     <div>
-      <input class="w-full" v-model="position.x" type="range" min="-200" max="50" />
-      <input class="w-full" v-model="position.y" type="range" min="-150" max="50" />
+      <input class="w-full" v-model="position.x" type="range" min="-50" max="250" />
+      <input class="w-full" v-model="position.y" type="range" min="-50" max="250" />
     </div>
     <label for="position">Size</label>
     <div>

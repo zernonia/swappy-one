@@ -13,32 +13,26 @@ export default async function (req: VercelRequest, res: VercelResponse) {
   // @ts-ignore
   const base64 = new Buffer(arrayBuffer, "binary").toString("base64")
 
-  res.json({
-    token,
-    secret,
-    id,
-    imageData,
-  })
-  // client(token, secret)
-  //   .accountsAndUsers.accountUpdateProfileImage({
-  //     image: base64,
-  //     skip_status: true,
-  //   })
-  //   .then(async (updated_response) => {
-  //     const updatedData = await supabase.from("user").upsert([
-  //       {
-  //         id,
-  //         changed_back: true,
-  //       },
-  //     ])
-  //     console.log(updatedData.data)
+  client(token, secret)
+    .accountsAndUsers.accountUpdateProfileImage({
+      image: base64,
+      skip_status: true,
+    })
+    .then(async (updated_response) => {
+      const updatedData = await supabase.from("user").upsert([
+        {
+          id,
+          changed_back: true,
+        },
+      ])
+      console.log(updatedData.data)
 
-  //     res.json({
-  //       success: true,
-  //     })
-  //   })
-  //   .catch((error) => {
-  //     console.log(error)
-  //     res.status(400).send(error)
-  //   })
+      res.json({
+        success: true,
+      })
+    })
+    .catch((error) => {
+      console.log(error)
+      res.status(400).send(error)
+    })
 }
