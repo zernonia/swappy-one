@@ -37,7 +37,7 @@ supabase.auth.onAuthStateChange(async (ev, session) => {
         <span class="mx-1">|</span>
 
         <a href="https://github.com/zernonia" target="_blank" rel="noopener">Github</a>,
-        <a href="https://twitter.com/zernonia" rel="noopener">Twitter</a>
+        <a href="https://twitter.com/zernonia" target="_blank" rel="noopener">Twitter</a>
       </p>
     </footer>
   </div>

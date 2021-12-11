@@ -84,7 +84,7 @@ const getOriginalImage = (image: string) => {
           <a
             href="https://github.com/zernonia/swappy-one"
             target="_blank"
-            refl="noopener"
+            rel="noopener"
             class="rounded-full bg-dark-500 !p-0 !w-9 !h-9 btn shadow-md"
           >
             <i-uim:github-alt class="text-green-400"></i-uim:github-alt>
@@ -92,7 +92,7 @@ const getOriginalImage = (image: string) => {
           <a
             href="https://twitter.com/zernonia"
             target="_blank"
-            refl="noopener"
+            rel="noopener"
             class="rounded-full bg-dark-500 !p-0 !w-9 !h-9 btn shadow-md"
           >
             <i-uim:twitter-alt class="text-green-400"></i-uim:twitter-alt>
