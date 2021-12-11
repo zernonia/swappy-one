@@ -60,29 +60,52 @@ const getOriginalImage = (image: string) => {
 </script>
 
 <template>
-  <div id="step0" v-if="!user" class="flex space-x-2 z-5">
-    <input
-      v-model="id"
-      name="twitter_id"
-      class="bg-dark-300 text-white"
-      placeholder="Twitter name"
-      id="twitter_id"
-      type="text"
-    />
-    <button @click="searchUser(id)" class="btn">Search</button>
-    <ButtonLogin></ButtonLogin>
+  <div id="step0" v-if="!user" class="flex flex-col md:flex-row md:space-x-2 z-5">
+    <div class="flex space-x-2">
+      <input
+        v-model="id"
+        name="twitter_id"
+        class="bg-dark-300 text-white"
+        placeholder="Twitter handler "
+        id="twitter_id"
+        type="text"
+        @keyup.enter="searchUser(id)"
+      />
+      <button @click="searchUser(id)" class="btn !p-2 !w-9 !h-9">
+        <i-eva:search-fill class="text-green-400"></i-eva:search-fill>
+      </button>
+    </div>
+    <ButtonLogin class="mt-4 md:mt-0"></ButtonLogin>
   </div>
   <div class="px-1 mt-8 w-full flex items-center justify-center">
     <div class="relative flex h-full w-full max-w-screen-md rounded-2xl">
       <div class="z-10 w-full bg-dark-700 rounded-2xl p-4">
+        <div class="z-20 absolute -top-6 md:-top-4 -right-4 flex items-center space-x-2">
+          <a
+            href="https://github.com/zernonia/swappy-one"
+            target="_blank"
+            refl="noopener"
+            class="rounded-full bg-dark-500 !p-0 !w-9 !h-9 btn shadow-md"
+          >
+            <i-uim:github-alt class="text-green-400"></i-uim:github-alt>
+          </a>
+          <a
+            href="https://twitter.com/zernonia"
+            target="_blank"
+            refl="noopener"
+            class="rounded-full bg-dark-500 !p-0 !w-9 !h-9 btn shadow-md"
+          >
+            <i-uim:twitter-alt class="text-green-400"></i-uim:twitter-alt>
+          </a>
+        </div>
         <ButtonLogout v-if="user" class="absolute -bottom-4 -right-4"></ButtonLogout>
-        <div class="flex h-full">
-          <ImageTemplates class="mr-4" id="step1"></ImageTemplates>
-          <div class="mx-4" id="step2">
+        <div class="flex flex-col md:flex-row h-full">
+          <ImageTemplates class="md:mr-4 w-full md:w-56" id="step1"></ImageTemplates>
+          <div class="md:mx-4 my-8 md:my-0" id="step2">
             <ImagePreview :user_image="user_image"></ImagePreview>
             <ImageSettings></ImageSettings>
           </div>
-          <div class="ml-4 w-56 flex flex-col" id="step3">
+          <div class="md:ml-4 w-full md:w-56 flex flex-col" id="step3">
             <ImagePublish :user_image="user_image" :user_data="user_data"></ImagePublish>
             <!-- <div class="h-0.5 w-full rounded-full bg-dark-300 my-4"></div> -->
             <PoweredBy></PoweredBy>

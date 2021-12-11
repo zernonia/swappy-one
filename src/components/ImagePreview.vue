@@ -24,7 +24,7 @@ const computedTransform = computed(() => {
 </script>
 
 <template>
-  <div class="w-full relative">
+  <div class="w-full relative flex justify-center">
     <div class="w-64 h-64 relative rounded-full overflow-hidden">
       <div id="newImage" class="w-full h-full">
         <img class="w-full h-full" id="oldImage" :src="user_image ? user_image : BlankImage" />

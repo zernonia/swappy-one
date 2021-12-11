@@ -22,6 +22,9 @@ export default defineConfig({
           "emerald.400",
         ]),
       }),
+      textShadow: {
+        green: "0 0px 4px #4edaa6",
+      },
       animation: {
         "pulse-slow": "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
         background: "change 3s ease infinite",

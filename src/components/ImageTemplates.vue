@@ -52,7 +52,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex flex-col w-56">
+  <div class="flex flex-col">
     <SearchBox :list="computedList" v-model="searchTerm" @selected="logo = $event"> </SearchBox>
 
     <button class="btn mt-4" @click="isUploadOpen = true">

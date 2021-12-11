@@ -22,6 +22,7 @@ const emits = defineEmits(["close"])
       items-center
       justify-center
       z-50
+      px-4
     "
   >
     <div

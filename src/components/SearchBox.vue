@@ -53,7 +53,9 @@ watch(
         placeholder="Search icon..."
         v-model="searchTerm"
       />
-      <div class="mt-4 w-full h-full max-h-74 flex flex-col rounded-xl bg-dark-400 text-white overflow-y-auto">
+      <div
+        class="mt-4 w-full h-40 md:h-full md:max-h-74 flex flex-col rounded-xl bg-dark-400 text-white overflow-y-auto"
+      >
         <button
           @click="select(item)"
           class="btn !justify-start !rounded-none !text-left"
