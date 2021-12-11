@@ -19,7 +19,6 @@ export default function (req: VercelRequest, res: VercelResponse) {
           "profile_image_url_https",
           "profile_banner_url"
         ),
-        user_data,
       })
     })
     .catch((error) => {
