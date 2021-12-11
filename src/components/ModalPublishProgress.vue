@@ -32,7 +32,7 @@ const progress = computed(() => {
           <i-uim:refresh
             class="mr-2 w-auto h-auto transform animate-spin animate-reverse animate-ease-in-out"
           ></i-uim:refresh>
-          <p>{{ currentStep }} / {{ totalStep }}</p>
+          <p class="w-max">{{ currentStep }} / {{ totalStep }}</p>
         </div>
       </div>
     </div>

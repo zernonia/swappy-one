@@ -109,11 +109,11 @@ const uploadImage = async () => {
       />
       <button
         :disabled="!logoBlob || !logoName"
-        class="px-2 py-2 text-green-400 disabled:opacity-50 disabled:cursor-not-allowed"
+        class="!w-10 !h-9 !p-2 btn ml-2 text-green-400 disabled:opacity-50 disabled:cursor-not-allowed"
         @click="uploadImage"
       >
-        <i-uim:upload-alt v-if="!isLoading" class="!w-9 !h-9 !p-2 btn"></i-uim:upload-alt>
-        <i-uim:refresh v-else class="w-auto h-auto animate-spin animate-ease-in-out"></i-uim:refresh>
+        <i-uim:upload-alt v-if="!isLoading" class=""></i-uim:upload-alt>
+        <i-uim:refresh v-else class="animate-spin animate-reverse animate-ease-in-out"></i-uim:refresh>
       </button>
     </div>
     <span class="text-red-400 text-xs self-start mt-1 ml-4" v-if="errorText">{{ errorText }}</span>
