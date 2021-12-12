@@ -13,6 +13,9 @@ import ImageList from "@/components/ImageList.vue"
 import ImagePublish from "@/components/ImagePublish.vue"
 import PoweredBy from "@/components/PoweredBy.vue"
 import ToastNewUser from "@/components/ToastNewUser.vue"
+import { useEventBus } from "@vueuse/core"
+
+const bus = useEventBus("fetch_user_data")
 
 const id = ref("")
 const user_data = ref<UserImage>()
@@ -21,25 +24,32 @@ const user_image = ref("")
 const toast = useToast()
 const { user } = toRefs(store)
 
+const setUserData = async () => {
+  const { data, error } = await supabase.from("user").select("*").single()
+  if (data) {
+    user_data.value = data
+    const imageData = await supabase.storage
+      .from("profile-image")
+      .download(data.old_image_key?.split("profile-image/")[1])
+
+    if (imageData.data) {
+      user_image.value = URL.createObjectURL(imageData.data)
+    } else {
+      searchUser(user.value?.user_metadata.user_name)
+    }
+  } else {
+    searchUser(user.value?.user_metadata.user_name)
+  }
+}
+
+bus.on(async () => {
+  await setUserData()
+})
 watch(
   user,
   async (n) => {
     if (n) {
-      const { data, error } = await supabase.from("user").select("*").single()
-      if (data) {
-        user_data.value = data
-        const imageData = await supabase.storage
-          .from("profile-image")
-          .download(data.old_image_key?.split("profile-image/")[1])
-
-        if (imageData.data) {
-          user_image.value = URL.createObjectURL(imageData.data)
-        } else {
-          searchUser(user.value?.user_metadata.user_name)
-        }
-      } else {
-        searchUser(user.value?.user_metadata.user_name)
-      }
+      await setUserData()
     }
   },
   {

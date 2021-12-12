@@ -7,6 +7,9 @@ import Selection from "./Selection.vue"
 import ModalPublishProgress from "./ModalPublishProgress.vue"
 import ModalSuccess from "./ModalSuccess.vue"
 import ModalLogin from "./ModalLogin.vue"
+import { useEventBus } from "@vueuse/core"
+
+const bus = useEventBus("fetch_user_data")
 
 const { user, provider_token } = toRefs(store)
 const { logo, period } = toRefs(store.templates)
@@ -98,6 +101,7 @@ const publishImage = async () => {
     setStep(4, "Success!")
     isPublishing.value = false
     isSuccess.value = true
+    bus.emit("fetch")
   } catch (err) {
     setStep(currentStep.value, "Error publishing...")
     console.log(err)
