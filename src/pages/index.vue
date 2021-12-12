@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, watch, toRefs } from "vue"
+import { useToast } from "vue-toastification"
 import ButtonLogin from "@/components/ButtonLogin.vue"
 import ButtonLogout from "@/components/ButtonLogout.vue"
 import { store } from "@/scripts/store"
@@ -11,11 +12,13 @@ import ImageTemplates from "@/components/ImageTemplates.vue"
 import ImageList from "@/components/ImageList.vue"
 import ImagePublish from "@/components/ImagePublish.vue"
 import PoweredBy from "@/components/PoweredBy.vue"
+import ToastNewUser from "@/components/ToastNewUser.vue"
 
 const id = ref("")
 const user_data = ref<UserImage>()
 const user_image = ref("")
 
+const toast = useToast()
 const { user } = toRefs(store)
 
 watch(
@@ -45,10 +48,16 @@ watch(
 )
 
 onMounted(() => {
-  supabase
+  const historySubscription = supabase
     .from("user_history")
     .on("INSERT", (payload) => {
-      console.log(payload)
+      const new_data = payload.new
+      toast.success({
+        component: ToastNewUser,
+        props: {
+          template: new_data.template,
+        },
+      })
     })
     .subscribe()
 })
@@ -60,7 +69,9 @@ const searchUser = (screen_name: string) => {
     .then((res) => {
       user_image.value = getOriginalImage(res.data.profile_image_url_https)
     })
-    .catch((error) => console.log(error))
+    .catch((error) => {
+      toast.error("No user found")
+    })
 }
 
 const getOriginalImage = (image: string) => {

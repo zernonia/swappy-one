@@ -1,6 +1,7 @@
 import { reactive, ComputedRef } from "vue"
 import { useStorage } from "@vueuse/core"
 import { User } from "@supabase/gotrue-js"
+import { Logo } from "@/scripts/interface"
 
 export const store = reactive({
   user: null as User | null,
@@ -8,6 +9,7 @@ export const store = reactive({
     token: "",
     secret: "",
   },
+  logoList: [] as Logo[],
   templates: useStorage("templates", {
     name: "",
     logo: {

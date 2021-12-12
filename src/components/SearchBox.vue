@@ -5,6 +5,7 @@ import { useDebounce } from "@vueuse/core"
 import { supabase } from "@/supabase"
 import { Logo } from "@/scripts/interface"
 import { useRoute, useRouter } from "vue-router"
+import { store } from "@/scripts/store"
 
 const props = defineProps({
   list: {
@@ -38,8 +39,9 @@ const getSupabaseImageUrl = (name: string) => {
 }
 
 watch(
-  () => [props.list],
+  () => [props.list, route.query],
   () => {
+    store.logoList = props.list
     const { template } = route.query
     if (template) {
       emits("update:modelValue", template)

@@ -58,6 +58,41 @@ ol {
   }
 }
 
+.Vue-Toastification__toast {
+  @apply !p-4 !rounded-xl;
+}
+
+.Vue-Toastification__toast--success {
+  @apply !bg-dark-800 border-4 border-green-500 shadow-lg shadow-green-600;
+
+  & svg {
+    @apply text-green-500;
+  }
+
+  & .Vue-Toastification__toast-body {
+    @apply flex items-center text-sm;
+  }
+
+  & .Vue-Toastification__progress-bar {
+    @apply !bg-dark-100;
+  }
+}
+.Vue-Toastification__toast--error {
+  @apply !bg-dark-800 border-4 border-red-500 shadow-lg shadow-red-600;
+
+  & svg {
+    @apply text-red-500;
+  }
+
+  & .Vue-Toastification__toast-body {
+    @apply flex items-center text-sm;
+  }
+
+  & .Vue-Toastification__progress-bar {
+    @apply !bg-dark-100;
+  }
+}
+
 #step0,
 #step1,
 #step2,
