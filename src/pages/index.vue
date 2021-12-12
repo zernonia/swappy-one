@@ -44,6 +44,15 @@ watch(
   }
 )
 
+onMounted(() => {
+  supabase
+    .from("user_history")
+    .on("INSERT", (payload) => {
+      console.log(payload)
+    })
+    .subscribe()
+})
+
 const searchUser = (screen_name: string) => {
   if (!screen_name) return
   fetch(`./api/user/${screen_name}`)
