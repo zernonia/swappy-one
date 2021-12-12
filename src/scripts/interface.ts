@@ -1,5 +1,5 @@
 export interface UserImage {
-  id: number
+  id: string
   user_id: string
   update_on: string
   old_image_key: string

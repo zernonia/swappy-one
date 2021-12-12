@@ -39,7 +39,7 @@ const setStep = (progress: number, msg: string) => {
 }
 
 const publishImage = async () => {
-  if (!props.user_data) {
+  if (!user.value?.id) {
     isLoginModalOpen.value = true
     return
   }
