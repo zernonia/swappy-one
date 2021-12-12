@@ -58,6 +58,9 @@ ol {
   }
 }
 
+.Vue-Toastification__container {
+  @apply !p-4;
+}
 .Vue-Toastification__toast {
   @apply !p-4 !rounded-xl;
 }
@@ -101,19 +104,19 @@ ol {
 }
 #step0::before {
   content: "0.";
-  @apply absolute -top-3 -left-7 md:-left-10 text-4xl text-white opacity-75 md:opacity-25 font-bold;
+  @apply -z-1 absolute -top-3 -left-7 md:-left-10 text-4xl text-white opacity-25 font-bold;
 }
 #step1::before {
   content: "1.";
-  @apply absolute -top-3 -left-10 md:-left-10 text-4xl text-white opacity-75 md:opacity-25 font-bold;
+  @apply -z-1 absolute -top-3 -left-5 md:-left-10 text-4xl text-white opacity-25 font-bold;
 }
 #step2::before {
   content: "2.";
-  @apply absolute -top-3 -left-10 md:-left-2 text-4xl text-white opacity-75 md:opacity-25 font-bold;
+  @apply -z-1 absolute -top-3 -left-5 md:-left-2 text-4xl text-white opacity-25 font-bold;
 }
 #step3::before {
   content: "3.";
-  @apply absolute -top-3 -left-10 md:-left-10 text-4xl text-white opacity-75 md:opacity-25 font-bold;
+  @apply -z-1 absolute -top-3 -left-5 md:-left-10 text-4xl text-white opacity-25 font-bold;
 }
 
 .slide-top-down-enter-active,
