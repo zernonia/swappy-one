@@ -31,6 +31,7 @@ export default async function (req: VercelRequest, res: VercelResponse) {
           old_image_key: oldkey,
           new_image_key: key,
           template,
+          changed_back: false,
         },
       ])
       console.log(insertedData.data)
