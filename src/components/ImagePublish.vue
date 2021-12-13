@@ -88,7 +88,7 @@ const publishImage = async () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        oldkey: oldData?.data?.Key,
+        old_key: oldData?.data?.Key,
         key: newData?.data?.Key,
         template: logo.value.name,
         id: user.value?.id,
