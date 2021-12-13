@@ -19,7 +19,21 @@ supabase.auth.onAuthStateChange(async (ev, session) => {
 </script>
 
 <template>
-  <div class="w-screen min-h-screen p-4 py-8 sm:p-8 bg-dark-900 flex flex-col justify-center items-center md:pb-32">
+  <div
+    class="
+      w-full
+      min-h-screen
+      p-4
+      py-8
+      sm:p-8
+      bg-dark-900
+      flex flex-col
+      justify-center
+      items-center
+      md:pb-32
+      overflow-x-hidden
+    "
+  >
     <router-link to="/">
       <h1 class="text-4xl text-center font-bold text-white inline-flex mb-4 text-shadow-green">
         Swappy
