@@ -52,17 +52,100 @@ After a certain amount of period (you can configure on the app), it will automat
 - Supabase Storage
 - Postgres Function
 
-## 🌎 Local Development
+### Postgres SQL
 
-=== WIP ===
+1. Store user's history
+
+   ```sql
+   create or replace function public.handle_new_user_image()
+   returns trigger as $$
+   begin
+     insert into public.user_history (user_id, template, new_image_key)
+     values (new.id, new.template, new.new_image_key);
+     return new;
+   end;
+   $$ language plpgsql security definer;
+
+   create trigger on_new_user_image
+     after insert or update of update_on on public.user
+     for each row execute procedure public.handle_new_user_image();
+   ```
+
+2. Invoke Vercel serverless function
+
+   ```sql
+   create or replace function change_back_image_vercel_webhook (input_id uuid)
+     returns integer
+     language plpgsql
+     as
+     $$
+       begin
+         return (select
+           net.http_post(
+               url:='https://swappy.one/api/user/change_back_image',
+               body:=(
+                 select json_build_object(
+                   'id', a.id,
+                   'old_image_key', a.old_image_key,
+                   'token', a.oauth_token,
+                   'secret', a.oauth_token_secret
+                   ) as body
+                 from (select a.id, a.old_image_key, b.oauth_token , b.oauth_token_secret
+                   from public.user a inner join public.user_token b on a.id = b.user_id where a.id = input_id) a
+               )::jsonb
+           ) as request_id);
+       end;
+     $$
+   ```
+
+3. Function to query all the rows that need to change back their image, and loop through each row and call the `change_back_image_vercel_webhook`
+
+   ```sql
+   create or replace function check_date_and_change_back()
+     returns table (request_id int)
+     language plpgsql
+     as
+     $$
+       declare
+         r record;
+       begin
+         for r in (
+           select * from public.user
+           where now() > change_back_date and changed_back = false
+         ) loop
+             request_id := change_back_image_vercel_webhook(r.id);
+             return next;
+           end loop;
+       end;
+     $$;
+   ```
+
+4. CRON job to start the function #3 every hour.
+
+   ```sql
+   create extension if not exists pg_cron;
+   grant usage on schema cron to postgres;
+   grant all privileges on all tables in schema cron to postgres;
+
+   select
+     cron.schedule(
+       'change_back_user_old_image',
+       '0 */1 * * *', -- “At minute 0 past every 1th hour.”  https://crontab.guru/#0_*/1_*_*_*
+       $$
+         select check_date_and_change_back()
+       $$
+     );
+   ```
+
+## 🌎 Local Development
 
 ### Prerequisites
 
 Yarn
 
-- ```sh
-  npm install --global yarn
-  ```
+```sh
+npm install --global yarn
+```
 
 ### Development
 
@@ -74,9 +157,22 @@ Yarn
    ```sh
    yarn install
    ```
-3. Run Development instance
+3. Create `.env`
+
+   ```bash
+    VITE_SUPABASE_URL=
+    VITE_SUPABASE_ANON_KEY=
+    VITE_SUPABASE_SERVICE_KEY=
+    VITE_TWITTER_CONSUMER_KEY=
+    VITE_TWITTER_CONSUMER_SECRET=
+    TWITTER_ACCESS_TOKEN_KEY=
+    TWITTER_ACCESS_TOKEN_SECRET=
+    VITE_TWITTER_BEARER_TOKEN=
+   ```
+
+4. Run Development instance
    ```sh
-   yarn dev
+   vercel dev
    ```
 
 ## ➕ Contributing
@@ -94,12 +190,6 @@ Contributions are what make the open source community such an amazing place to b
 1. Fundamental for this Visualization ([Generate database types from OpenAPI specification](https://supabase.io/docs/reference/javascript/generating-types#generate-database-types-from-openapi-specification))
 2. Guide to Construct Dynamic SVG Connector ([Connecting Table using SVG](https://codepen.io/alojzije/pen/ndfrI))
 3. [Icones - icon gallery](https://icones.js.org/)
-
-## 📈 Analytics
-
-I'm using [Umami Analytics](https://umami.is/docs/about) because I'm interested in the distributions of user who uses Supabase and this tool.
-
-[This](https://umami-zernonia.vercel.app/share/yzSUulXQ/Supabase%20Schema) is the public URL for the analytics. Enjoy!
 
 ## 📜 License
 
