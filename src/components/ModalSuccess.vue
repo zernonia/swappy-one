@@ -9,7 +9,7 @@ const emits = defineEmits(["close"])
 const computedLink = computed(() => `https://www.swappy.one/?template=${logo.value.name}`)
 const msg = computed(
   () =>
-    `If you want to change your Twitter profile temporary, check out Swappy. One by @zernonia!%0A%0AI'm currently using ${logo.value.name}!`
+    `If you want to change your Twitter profile temporarily, check out Swappy.One by @zernonia!%0A%0AI'm currently using ${logo.value.name}!`
 )
 </script>
 
